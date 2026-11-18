@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STEM EdTech LMS - Nền tảng Học tập & Thực hành Đa dạng Hóa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Application Bar -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-group" id="btn-brand-home" title="Trở về Trang chủ">
+        <span class="brand-icon">🎓</span>
+        <div class="brand-text">
+          <h1 class="brand-title">STEM EdTech LMS</h1>
+          <p class="brand-subtitle">Nền tảng Tự học • Chế tạo STEM • Thực hành Đa dạng • Kiểm tra Toàn diện</p>
+        </div>
+      </div>
+
+      <!-- Quick Global Search -->
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          id="global-search-input" 
+          placeholder="Tìm bài học, chủ đề, thuật ngữ STEM..." 
+          autocomplete="off"
+        />
+        <button id="search-clear-btn" class="search-clear-btn" title="Xóa tìm kiếm" style="display: none;">✕</button>
+        <!-- Search suggestions dropdown -->
+        <div id="search-results-dropdown" class="search-dropdown" style="display: none;"></div>
+      </div>
+
+      <!-- User Progress Quick Indicator -->
+      <div class="header-actions">
+        <div class="progress-badge" title="Tiến độ hoàn thành bài học">
+          <span class="progress-icon">🏆</span>
+          <span id="header-completed-count">0</span>
+          <span class="progress-label">bài đã học</span>
+        </div>
+        <button id="btn-theme-reset" class="btn-icon" title="Thiết lập lại tiến độ">
+          <span class="icon">🔄</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hierarchical Breadcrumb Navigation -->
+    <nav class="breadcrumb-bar" aria-label="Điều hướng phân cấp">
+      <div class="breadcrumb-container" id="breadcrumb-list">
+        <!-- Rendered dynamically via JavaScript -->
+        <span class="breadcrumb-item active">🏠 Trang chủ</span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="app-main">
+    <div class="main-container">
+
+      <!-- View 1: Level Selection (Cấp học) -->
+      <section id="view-levels" class="view-section active">
+        <div class="section-hero">
+          <h2 class="section-title">Chọn Cấp Học</h2>
+          <p class="section-desc">Hệ thống phân cấp theo cấu trúc thư mục học liệu chuẩn EdTech từ Mầm non đến THPT.</p>
+        </div>
+        <div class="grid-levels" id="levels-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- View 2: Language Selection (Ngôn ngữ VIE / ENG) -->
+      <section id="view-languages" class="view-section">
+        <div class="section-hero">
+          <div class="hero-back-row">
+            <button class="btn btn-ghost btn-back-step" data-target="levels">← Quay lại Cấp học</button>
+            <span class="current-badge" id="lang-level-badge">Cấp học</span>
+          </div>
+          <h2 class="section-title">Chọn Ngôn Ngữ Học Liệu</h2>
+          <p class="section-desc">Lựa chọn chương trình học bằng Tiếng Việt hoặc Song ngữ Anh - Việt quốc tế.</p>
+        </div>
+        <div class="grid-languages" id="languages-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- View 3: Topic Selection (Chủ đề / Topics) -->
+      <section id="view-topics" class="view-section">
+        <div class="section-hero">
+          <div class="hero-back-row">
+            <button class="btn btn-ghost btn-back-step" data-target="languages">← Quay lại Ngôn ngữ</button>
+            <span class="current-badge" id="topic-path-badge">Cấp học / Ngôn ngữ</span>
+          </div>
+          <h2 class="section-title" id="topics-title">Danh Sách Chủ Đề STEM</h2>
+          <p class="section-desc" id="topics-desc">Khám phá các chuyên đề nghiên cứu, thiết kế kỹ thuật và khoa học ứng dụng.</p>
+        </div>
+        <div class="grid-topics" id="topics-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- View 4: Lecture List (Danh sách Bài giảng trong Chủ đề) -->
+      <section id="view-lectures" class="view-section">
+        <div class="section-hero topic-header-hero">
+          <div class="hero-back-row">
+            <button class="btn btn-ghost btn-back-step" data-target="topics">← Quay lại Chủ đề</button>
+            <span class="current-badge" id="lecture-topic-badge">Chủ đề</span>
+          </div>
+          <div class="topic-hero-content">
+            <div class="topic-hero-icon" id="lecture-hero-icon">🔬</div>
+            <div class="topic-hero-info">
+              <h2 class="section-title" id="lecture-list-title">Danh sách bài học</h2>
+              <p class="section-desc" id="lecture-list-desc">Mỗi bài học số hóa bao gồm chu trình 3 bước: Kế hoạch bài học tương tác -> Thực hành 4 hoạt động -> Kiểm tra đa dạng.</p>
+            </div>
+          </div>
+        </div>
+        <div class="grid-lectures" id="lectures-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- View 5: 3-Step Learning Hub (Chu trình 3 bước: Học -> Thực hành -> Kiểm tra) -->
+      <section id="view-lecture-hub" class="view-section">
+        
+        <!-- Hub Top Header -->
+        <div class="hub-header">
+          <div class="hub-header-left">
+            <button class="btn btn-ghost btn-back-step" data-target="lectures">← Danh sách bài học</button>
+            <h2 class="hub-lecture-title" id="hub-lecture-title">Tên bài học</h2>
+            <span class="hub-file-path" id="hub-file-path">📋 Cấu trúc bài học số hóa chuẩn STEM EDP</span>
+          </div>
+          <div class="hub-header-right">
+            <span class="status-pill" id="hub-completion-status">Chưa hoàn thành</span>
+          </div>
+        </div>
+
+        <!-- 3-Step Navigation Stepper -->
+        <div class="learning-stepper">
+          <div class="step-item active" data-step="1" id="step-btn-1">
+            <div class="step-number">1</div>
+            <div class="step-details">
+              <span class="step-label">Bước 1</span>
+              <span class="step-name">Bài Học Tương Tác (Learn)</span>
+            </div>
+          </div>
+          <div class="step-divider"></div>
+          <div class="step-item" data-step="2" id="step-btn-2">
+            <div class="step-number">2</div>
+            <div class="step-details">
+              <span class="step-label">Bước 2</span>
+              <span class="step-name">Thực Hành Đa Dạng (Practice)</span>
+            </div>
+          </div>
+          <div class="step-divider"></div>
+          <div class="step-item" data-step="3" id="step-btn-3">
+            <div class="step-number">3</div>
+            <div class="step-details">
+              <span class="step-label">Bước 3</span>
+              <span class="step-name">Kiểm Tra Đa Dạng (Test)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- Step Content 1: Bài Học Tương Tác (Learn)                         -->
+        <!-- Tự tạo bài học từ kế hoạch bài giảng, không dùng ảnh & video      -->
+        <!-- ================================================================= -->
+        <div class="step-content active" id="step-content-1">
+          <div class="digital-lesson-container" id="digital-lesson-container">
+            
+            <!-- Section 1.1: Lesson Overview Card -->
+            <div class="card lesson-meta-card">
+              <div class="meta-badges-row">
+                <span class="meta-pill pill-discipline" id="lesson-meta-discipline">Khoa học Vật lý</span>
+                <span class="meta-pill pill-age" id="lesson-meta-age">8 - 18 tuổi</span>
+                <span class="meta-pill pill-duration" id="lesson-meta-duration">90 phút</span>
+                <span class="meta-pill pill-method">Quy trình Kỹ thuật EDP</span>
+              </div>
+              <p class="lesson-meta-summary" id="lesson-meta-summary">
+                Mô tả tổng quan bài học.
+              </p>
+
+              <!-- Lesson Plan PDF Attachment Box -->
+              <div class="lesson-pdf-box" id="lesson-pdf-box">
+                <div class="pdf-box-left">
+                  <div class="pdf-badge-icon">📄</div>
+                  <div class="pdf-meta-info">
+                    <span class="pdf-label-title" id="pdf-label-title">Kế hoạch Bài giảng (PDF Gốc):</span>
+                    <span class="pdf-file-title" id="lesson-pdf-filename">bai-giang.pdf</span>
+                  </div>
+                </div>
+                <div class="pdf-box-actions">
+                  <a href="#" class="btn btn-outline btn-sm" id="lesson-pdf-view-btn" target="_blank" rel="noopener noreferrer">
+                    <span>👁️ Mở xem PDF</span>
+                  </a>
+                  <a href="#" class="btn btn-primary btn-sm" id="lesson-pdf-download-btn" download>
+                    <span>⬇️ Tải file về máy</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 1.2: Objectives & Materials Row -->
+            <div class="lesson-two-col-grid">
+              
+              <!-- Column A: Mục tiêu bài học -->
+              <div class="card objectives-card">
+                <div class="card-header">
+                  <div class="card-header-title">
+                    <span class="card-icon">🎯</span>
+                    <h3>Mục Tiêu Bài Học (Learning Objectives)</h3>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <ul class="objectives-list" id="lesson-objectives-list">
+                    <!-- Dynamic objectives -->
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Column B: Tủ Nguyên Vật Liệu (Interactive Checklist) -->
+              <div class="card materials-card">
+                <div class="card-header">
+                  <div class="card-header-title">
+                    <span class="card-icon">📦</span>
+                    <h3>Tủ Vật Liệu & Dụng Cụ (Checklist)</h3>
+                  </div>
+                  <span class="materials-progress-badge" id="materials-progress-badge">0/0 Đã chuẩn bị</span>
+                </div>
+                <div class="card-body">
+                  <p class="checklist-tip">Học sinh tích chọn các món đồ đã sẵn sàng trên bàn làm việc:</p>
+                  
+                  <div class="materials-group">
+                    <h5 class="mat-group-title">Vật liệu bắt buộc:</h5>
+                    <div class="checklist-items" id="mat-required-list"></div>
+                  </div>
+
+                  <div class="materials-group">
+                    <h5 class="mat-group-title">Vật liệu thay thế / Tái chế:</h5>
+                    <div class="checklist-items" id="mat-optional-list"></div>
+                  </div>
+
+                  <div class="materials-group">
+                    <h5 class="mat-group-title">Dụng cụ đo lường & An toàn:</h5>
+                    <div class="checklist-items" id="mat-tools-list"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Section 1.3: Thử thách Kỹ thuật (STEM Challenge) -->
+            <div class="card challenge-card">
+              <div class="card-header">
+                <div class="card-header-title">
+                  <span class="card-icon">🏆</span>
+                  <h3>Thử Thách Kỹ Thuật Thực Tế (Engineering Challenge)</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="challenge-scenario-box">
+                  <strong class="scenario-label">Bối cảnh đặt ra:</strong>
+                  <p id="challenge-scenario-text">Tình huống thực tế cần giải quyết.</p>
+                </div>
+                <div class="challenge-criteria-grid">
+                  <div class="criteria-box">
+                    <h5 class="criteria-title">✅ Tiêu chí Thành công (Criteria):</h5>
+                    <ul class="criteria-list" id="challenge-criteria-list"></ul>
+                  </div>
+                  <div class="constraints-box">
+                    <h5 class="constraints-title">⚠️ Ràng buộc Kỹ thuật (Constraints):</h5>
+                    <ul class="constraints-list" id="challenge-constraints-list"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 1.4: Bản chất Khoa học & Nguyên lý Cốt lõi -->
+            <div class="card science-theory-card">
+              <div class="card-header">
+                <div class="card-header-title">
+                  <span class="card-icon">🔬</span>
+                  <h3>Bản Chất Khoa Học & Nguyên Lý Cốt Lõi</h3>
+                </div>
+              </div>
+              <div class="card-body" id="science-principles-container">
+                <!-- Dynamic principles -->
+              </div>
+            </div>
+
+            <!-- Section 1.5: Quy trình Thiết kế Kỹ thuật 5 bước (EDP) -->
+            <div class="card edp-timeline-card">
+              <div class="card-header">
+                <div class="card-header-title">
+                  <span class="card-icon">⚙️</span>
+                  <h3>Quy Trình Thiết Kế Kỹ Thuật 5 Bước (Engineering Design Process)</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="edp-steps-list" id="edp-steps-container">
+                  <!-- Dynamic steps -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 1.6: Bảng Tính Thực Nghiệm Tương Tác (Lab Calculator) -->
+            <div class="card lab-calc-card">
+              <div class="card-header">
+                <div class="card-header-title">
+                  <span class="card-icon">🧮</span>
+                  <h3 id="lab-calc-title">Bảng Tính Thực Nghiệm Kỹ Thuật</h3>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="calc-desc">Nhập số liệu đo lường thực tế từ sản phẩm của bạn để tính toán hiệu suất kỹ thuật:</p>
+                <div class="calc-inputs-row">
+                  <div class="calc-input-group">
+                    <label id="calc-input1-label">Quãng đường (m):</label>
+                    <input type="number" step="0.01" min="0" id="calc-input-1" placeholder="Nhập số đo..." />
+                  </div>
+                  <div class="calc-input-group">
+                    <label id="calc-input2-label">Thời gian (s):</label>
+                    <input type="number" step="0.01" min="0.01" id="calc-input-2" placeholder="Nhập số đo..." />
+                  </div>
+                  <button type="button" class="btn btn-primary" id="btn-run-calc">
+                    <span>Tính Toán</span> ⚡
+                  </button>
+                </div>
+                <div class="calc-result-box" id="calc-result-box" style="display: none;">
+                  <div class="calc-result-val">
+                    Kết quả: <strong id="calc-output-value">0.00</strong> <span id="calc-output-unit">m/s</span>
+                  </div>
+                  <div class="calc-result-feedback" id="calc-result-feedback">
+                    Nhận xét kết quả thực nghiệm.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 1.7: Câu hỏi Đào sâu & Thảo luận Kỹ thuật (Kèm Đáp án & Lời giải Kỹ sư) -->
+            <div class="card discussion-card">
+              <div class="card-header">
+                <div class="card-header-title">
+                  <span class="card-icon">💬</span>
+                  <div>
+                    <h3>Câu Hỏi Đào Sâu & Thảo Luận Sau Bài Học</h3>
+                    <p class="card-subtitle">Tư duy phản biện, tối ưu kỹ thuật và liên hệ thực tế (Có sẵn gợi ý & đáp án chi tiết)</p>
+                  </div>
+                </div>
+                <div class="card-header-actions">
+                  <button type="button" class="btn btn-sm btn-outline" id="btn-toggle-all-answers">
+                    👁️ Hiện/Ẩn tất cả đáp án
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="discussion-intro-tip">
+                  💡 <strong>Gợi ý sư phạm:</strong> Hãy suy nghĩ độc lập hoặc thảo luận nhóm để tìm phương án giải quyết trước khi bấm xem lời giải chi tiết từ kỹ sư STEM!
+                </div>
+                <div class="discussion-qa-container" id="lesson-discussion-list">
+                  <!-- Dynamic questions with expandable answers -->
+                </div>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-primary btn-block btn-lg" id="btn-goto-step-2">
+                  <span>Hoàn thành Lý thuyết & Chế tạo - Chuyển sang Bước 2: Thực hành</span> ➔
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- Step Content 2: Thực Hành Đa Dạng (Diversified Practice)          -->
+        <!-- 4 Chế độ: Flashcards, Ghép cặp, Sắp xếp quy trình, Điền khuyết    -->
+        <!-- ================================================================= -->
+        <div class="step-content" id="step-content-2">
+          <div class="practice-module-wrapper">
+            
+            <!-- 4-Activity Mode Switcher -->
+            <div class="activity-nav">
+              <div class="activity-tabs">
+                <button class="tab-btn active" id="tab-flashcard" data-mode="flashcard">
+                  <span>🃏</span> Flashcards 3D
+                </button>
+                <button class="tab-btn" id="tab-matching" data-mode="matching">
+                  <span>🧩</span> Nối Cặp Khái Niệm
+                </button>
+                <button class="tab-btn" id="tab-sequencing" data-mode="sequencing">
+                  <span>🔄</span> Sắp Xếp Quy Trình
+                </button>
+                <button class="tab-btn" id="tab-cloze" data-mode="cloze">
+                  <span>✍️</span> Điền Khuyết Thuật Ngữ
+                </button>
+              </div>
+              <div class="practice-stats" id="practice-stats-display">
+                <span class="stat-badge" id="practice-status-badge">Đang luyện tập</span>
+              </div>
+            </div>
+
+            <!-- Mode A: Flashcard Studio -->
+            <div class="practice-mode-view active" id="mode-flashcard-view">
+              <div class="flashcard-deck-container">
+                <div class="flashcard-deck-header">
+                  <span class="deck-counter" id="flashcard-counter">Thẻ 1 / 4</span>
+                  <span class="deck-hint">Mẹo: Click vào thẻ hoặc nhấn phím <kbd>Space</kbd> để lật</span>
+                </div>
+
+                <!-- 3D Flip Card Component -->
+                <div class="flashcard-scene">
+                  <div class="flashcard-object" id="active-flashcard" tabindex="0" role="button" aria-label="Thẻ flashcard ghi nhớ. Nhấn để lật.">
+                    <div class="flashcard-face flashcard-front">
+                      <div class="face-tag">THUẬT NGỮ / KHÁI NIỆM</div>
+                      <div class="face-main-term" id="fc-term">Thuật ngữ STEM</div>
+                      <div class="face-phonetic" id="fc-phonetic">/fəˈnɛtɪk/</div>
+                      <div class="face-action-hint">👆 Nhấn để xem định nghĩa & ví dụ</div>
+                    </div>
+                    <div class="flashcard-face flashcard-back">
+                      <div class="face-tag">ĐỊNH NGHĨA & ỨNG DỤNG</div>
+                      <div class="face-definition" id="fc-def">Định nghĩa chi tiết của khái niệm.</div>
+                      <div class="face-example-box">
+                        <strong class="example-title">Ví dụ thực tế:</strong>
+                        <p class="example-text" id="fc-example">Ví dụ áp dụng trong bài thực hành.</p>
+                      </div>
+                      <div class="face-action-hint">👆 Nhấn để lật lại</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Flashcard Controls -->
+                <div class="flashcard-controls">
+                  <button class="btn btn-outline" id="fc-prev-btn" title="Thẻ trước (Phím mũi tên trái)">
+                    ← Thẻ trước
+                  </button>
+                  <button class="btn btn-secondary" id="fc-flip-btn">
+                    🔄 Lật thẻ
+                  </button>
+                  <button class="btn btn-outline" id="fc-next-btn" title="Thẻ tiếp theo (Phím mũi tên phải)">
+                    Thẻ tiếp →
+                  </button>
+                </div>
+
+                <!-- Retention Self-Check -->
+                <div class="retention-check-bar">
+                  <span class="check-title">Đánh giá độ hiểu:</span>
+                  <button class="btn btn-sm btn-need-review" id="fc-mark-review">
+                    <span>⚠️</span> Cần ôn thêm
+                  </button>
+                  <button class="btn btn-sm btn-mastered" id="fc-mark-mastered">
+                    <span>✅</span> Đã thuộc vững
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode B: Matching Game (Nối từ / Nối khái niệm) -->
+            <div class="practice-mode-view" id="mode-matching-view">
+              <div class="matching-game-container">
+                <div class="matching-header">
+                  <p class="matching-instruction">
+                    Chọn một <strong>Thuật ngữ</strong> ở cột trái, sau đó chọn <strong>Định nghĩa tương ứng</strong> ở cột phải để ghép cặp.
+                  </p>
+                  <button class="btn btn-sm btn-ghost" id="btn-reset-matching">🔄 Chơi lại</button>
+                </div>
+
+                <div class="matching-grid">
+                  <div class="matching-col" id="matching-col-terms">
+                    <h4 class="matching-col-title">Thuật Ngữ STEM</h4>
+                    <div class="matching-cards-list" id="col-terms-list"></div>
+                  </div>
+                  <div class="matching-col" id="matching-col-defs">
+                    <h4 class="matching-col-title">Định Nghĩa / Ứng Dụng</h4>
+                    <div class="matching-cards-list" id="col-defs-list"></div>
+                  </div>
+                </div>
+
+                <div class="matching-success-banner" id="matching-success-banner" style="display: none;">
+                  <span class="banner-icon">🎉</span>
+                  <div class="banner-text">
+                    <h4>Xuất sắc! Bạn đã ghép đúng toàn bộ các cặp khái niệm!</h4>
+                    <p>Bộ nhớ cơ học và nhận thức không gian của bạn hoạt động rất hiệu quả.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode C: Sắp Xếp Quy Trình Kỹ Thuật (Step Sequencing) -->
+            <div class="practice-mode-view" id="mode-sequencing-view">
+              <div class="sequencing-game-container">
+                <div class="sequencing-header">
+                  <p class="sequencing-instruction">
+                    Sử dụng các nút mũi tên <strong>▲ Lên</strong> hoặc <strong>▼ Xuống</strong> để sắp xếp các bước thực hiện và tính toán theo đúng trình tự logic kỹ thuật:
+                  </p>
+                  <div class="seq-actions">
+                    <button class="btn btn-sm btn-outline" id="btn-reset-sequencing">🔄 Trộn lại</button>
+                    <button class="btn btn-sm btn-primary" id="btn-check-sequencing">✓ Kiểm Tra Thứ Tự</button>
+                  </div>
+                </div>
+
+                <div class="sequencing-cards-list" id="sequencing-cards-container">
+                  <!-- Rendered dynamically -->
+                </div>
+
+                <div class="sequencing-feedback-banner" id="sequencing-feedback-banner" style="display: none;">
+                  <span class="banner-icon" id="seq-feedback-icon">🎉</span>
+                  <div class="banner-text">
+                    <h4 id="seq-feedback-title">Kết quả kiểm tra trình tự</h4>
+                    <p id="seq-feedback-desc">Nhận xét về độ chính xác.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode D: Điền Khuyết Thuật Ngữ (Cloze / Fill-in-the-blank) -->
+            <div class="practice-mode-view" id="mode-cloze-view">
+              <div class="cloze-game-container">
+                <div class="cloze-header">
+                  <p class="cloze-instruction">
+                    Chọn từ vựng chính xác từ ngân hàng lựa chọn để hoàn chỉnh các phát biểu khoa học cốt lõi dưới đây:
+                  </p>
+                  <button class="btn btn-sm btn-primary" id="btn-check-cloze">✓ Kiểm Tra Đáp Án</button>
+                </div>
+
+                <div class="cloze-items-list" id="cloze-items-container">
+                  <!-- Rendered dynamically -->
+                </div>
+
+                <div class="cloze-feedback-banner" id="cloze-feedback-banner" style="display: none;">
+                  <span class="banner-icon" id="cloze-feedback-icon">🎉</span>
+                  <div class="banner-text">
+                    <h4 id="cloze-feedback-title">Kết quả điền từ</h4>
+                    <p id="cloze-feedback-desc">Nhận xét.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step Navigation Footer -->
+            <div class="step-footer-actions">
+              <button class="btn btn-outline" id="btn-back-to-step-1">
+                ← Quay lại Bước 1: Bài học
+              </button>
+              <button class="btn btn-primary" id="btn-goto-step-3">
+                <span>Vào làm Bước 3: Bài kiểm tra</span> ➔
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- Step Content 3: Kiểm Tra Đa Dạng (Diversified Assessments)        -->
+        <!-- Trắc nghiệm, Đúng/Sai, Xử lý sự cố, Ứng dụng tính toán             -->
+        <!-- ================================================================= -->
+        <div class="step-content" id="step-content-3">
+          <div class="test-module-wrapper">
+            
+            <!-- Test Intro / Score Summary Banner -->
+            <div class="test-summary-card" id="test-result-banner" style="display: none;">
+              <div class="result-icon-box" id="result-icon">🎯</div>
+              <div class="result-details">
+                <h3 class="result-title" id="result-title">Kết Quả Kiểm Tra Đa Dạng</h3>
+                <p class="result-desc" id="result-desc">Điểm số và phân tích chi tiết của bài làm:</p>
+                <div class="result-metrics">
+                  <div class="metric-item">
+                    <span class="metric-val" id="result-score-text">0/0</span>
+                    <span class="metric-label">Điểm số</span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-val" id="result-percent-text">0%</span>
+                    <span class="metric-label">Độ chính xác</span>
+                  </div>
+                  <div class="metric-item">
+                    <span class="metric-val" id="result-status-text">Đang làm</span>
+                    <span class="metric-label">Trạng thái</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quiz Questions Form -->
+            <form id="quiz-form" class="quiz-form-container">
+              <div class="quiz-header">
+                <div class="quiz-meta-info">
+                  <span class="quiz-badge">Bộ Đề STEM Chuyên Sâu (Kỹ Thuật • Toán Học • Vật Lý)</span>
+                  <span class="quiz-count-text" id="quiz-progress-text">Số câu hỏi: 6 câu</span>
+                </div>
+                <div class="quiz-status-note">
+                  Bài kiểm tra tích hợp: <strong>Thiết kế EDP</strong> • <strong>Nguyên lý Vật lý</strong> • <strong>Tính toán Toán học</strong> • <strong>Xử lý sự cố kỹ thuật</strong> • <strong>Khoa học vật liệu</strong> • <strong>Dữ liệu thực nghiệm</strong>:
+                </div>
+              </div>
+
+              <!-- Question items injected here -->
+              <div class="quiz-questions-list" id="quiz-questions-container"></div>
+
+              <!-- Quiz Action Buttons -->
+              <div class="quiz-submit-row">
+                <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-quiz">
+                  <span>Nộp Bài & Chấm Điểm Ngay</span> 📝
+                </button>
+                <button type="button" class="btn btn-outline btn-lg" id="btn-retake-quiz" style="display: none;">
+                  <span>Làm Lại Bài Kiểm Tra</span> 🔄
+                </button>
+                <button type="button" class="btn btn-success btn-lg" id="btn-next-lecture" style="display: none;">
+                  <span>Bài Học Tiếp Theo</span> ➔
+                </button>
+              </div>
+            </form>
+
+            <!-- Bottom Return to Practice -->
+            <div class="step-footer-actions">
+              <button class="btn btn-outline" id="btn-back-to-step-2">
+                ← Quay lại Bước 2: Thực hành
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p class="footer-copy">
+        STEM EdTech LMS © 2026 • Nền tảng Học tập & Thực hành Đa dạng Hóa
+      </p>
+      <p class="footer-note">
+        Chu trình Học tập Trải nghiệm: <strong>1. Kế hoạch Bài học ➔ 2. Thực hành 4 Hoạt động ➔ 3. Kiểm tra Đa Dạng</strong>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
